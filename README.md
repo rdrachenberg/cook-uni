@@ -1,2 +1,10 @@
-# cook-uni
-tasked with creating a functional recipe sharing site with DB Authorization login's and CRUD operations
+# **Cooking - Uni**
+## **TODO**
+* [ ] server - Webpack
+* [x] *Kinvey setup*
+* [x] *Notify Working*
+* [ ] Kinvey all routes working
+* [ ] Controllers setup<br>
+* [ ] Handlebars setup<br>
+
+* **README DONE [ ]**

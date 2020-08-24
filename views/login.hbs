@@ -1,0 +1,28 @@
+{{>header}}
+<div id="signUp" display="inline-block">
+    <form class="text-center p-5 form-layout" action="#/login" method="POST">
+
+        <p class="h4 mb-4">Sign in</p>
+
+        <input type="text" id="defaultRegisterFormUsername" name="username" class="form-control mb-4"
+            placeholder="Username">
+
+        <input type="password" id="defaultRegisterFormPassword" name="password" class="form-control" placeholder="Password">
+        <hr>
+
+        <button class="btn btn-danger w-25 m-auto my-4 btn-block" type="submit">Sign in</button>
+
+    </form>
+</div>
+<br>
+<div id="notifications">
+    <div id="successBox" class="alert alert-success alert-dismissible fade show" role="alert">{Success Message...}</div>
+    <div id="loadingBox" class="alert alert-info alert-dismissible fade show" role="alert">Loading...</div>
+    <div id="errorBox" class="alert alert-danger alert-dismissible fade show" role="alert">{Error Message...}</div>
+</div>
+<a href="#/register">
+    <p align="center" id="loadingImage">
+        <img src="https://i.pinimg.com/originals/a2/18/f7/a218f772a59aad480fcded754fa01824.gif" width="90%" >
+    </p>
+</a>
+{{>footer}}

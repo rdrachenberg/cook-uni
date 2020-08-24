@@ -1,0 +1,10 @@
+{
+    "meal":"Spaghetti",
+    "ingredients": ["Spaghetti package", "Oil", "Garlic", "Anchovies", "Breadcrumbs", "Parsley", "Chopped Black pepper", "Parmesan"],
+    "prepMethod":"This is a very easy prep just follow the simple instructions",
+    "description":"Boil spaghetti in salted water. After you finish, drain the water. During this time fry the garlic and the anchovies in the pan for 2 minutes in the heated olive oil. Stir continously. Mix breadcrumbs, parsley and pepper. Stir them and add them to the pot. Finally, stir the pan. Servew and sprinkle with Parmesan cheese.\n\n Super delicious for sure. RECOMMENDED!",
+    "foodImageURL": "https://pixabay.com/images/id-569067/",
+    "category":"Grain Food",
+    "categoryImageURL": "https://pixabay.com/images/id-228939/",
+    "likesCounter": 0
+}

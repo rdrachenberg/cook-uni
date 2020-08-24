@@ -1,0 +1,28 @@
+{
+    "name": "cook-uni",
+    "description": "a place to share recipes between users",
+    "author": "Ryan Drachenberg",
+    "license": "ISC",
+    "version": "1.0.0",
+    "main": "pathToMain",
+    "entry": "app.js",
+    "dependencies": {
+        "bootstrap": "^4.3.1",
+        "handlebars": "^4.7.6",
+        "jquery": "^3.5.1",
+        "popper.js": "^1.16.1",
+        "sammy": "^0.7.6"
+    },
+    "scripts": {
+        "start-server": "npx webpack-dev-server --open",
+        "build": "npx webpack -p"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.11.1",
+        "@babel/preset-env": "^7.11.0",
+        "babel-loader": "^8.1.0",
+        "webpack": "^4.44.1",
+        "webpack-cli": "^3.3.12",
+        "webpack-dev-server": "^3.11.0"
+    }
+}

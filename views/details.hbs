@@ -1,0 +1,43 @@
+{{>header}}
+    <div class="row form-layout p-5">
+        <div class="col-md-12">
+            {{#if loggedIn}}
+                {{#if recipe}}
+                <div class="recepieInfo">
+                    <div class="detailsFoodImage">
+                        <a >
+                        <img src="{{recipe.foodImageURL}}"
+                            alt="">
+                        </a>
+                    </div>
+
+                    <div class="infoPack">
+                        <h3 class="my-3">{{recipe.meal}}</h3>
+                        <p class="prep-method">{{recipe.prepMethod}}.</p>
+                        <p class="description">{{recipe.description}}</p>
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn-danger" href="#">Archive</a>
+                        <a class="btn btn-info" href="#/edit/{{recipe._id}}">Edit</a>
+                        <a class="btn btn-success" href="#/like/{{recipe._id}}">0 likes</a>
+                    </div>
+                </div>
+                <div class="detailsIngredients">
+                    <h3 class="my-3 ingredient">Ingredients</h3>
+                    {{#each recipe.ingredients}}
+                        <ul>
+                            <li>{{this}}</li>
+                        </ul>
+                    {{/each}}
+                </div>
+                {{/if}}
+            {{/if}}
+        </div>
+    </div>
+    <div id="notifications">
+        <div id="successBox" class="alert alert-success alert-dismissible fade show" role="alert">Successful Uploaded!</div>
+        <div id="loadingBox" class="alert alert-info alert-dismissible fade show" role="alert">Loading...</div>
+        <div id="errorBox" class="alert alert-danger alert-dismissible fade show" role="alert">Error! Please Check Hilighted
+            Box</div>
+    </div>
+{{>footer}}
