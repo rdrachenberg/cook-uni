@@ -1,6 +1,12 @@
 # **Cooking - Uni**
 
-    After you download; Run "npm install"!
+    After you download; Type "npm install"!
+<br>    
+
+    Then type "npm run-script build"
+<br>
+
+    Server Start: type "npm run-script start-server"
 
 ## **TODO**
 * [ ] server - Webpack
