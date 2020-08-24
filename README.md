@@ -1,4 +1,7 @@
 # **Cooking - Uni**
+
+    After you download; Run "npm install"!
+
 ## **TODO**
 * [ ] server - Webpack
 * [x] *Kinvey setup*
