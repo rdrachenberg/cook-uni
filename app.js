@@ -221,7 +221,9 @@ const app = Sammy('#rooter', function(){
         }
 
         handleSharedRecipesRoute(context){
+            context.loggedIn = window.sessionStorage.getItem('loggedIn');
             context.loggedIn = loggedIn;
+            
             context.user = user;
             context.name = window.sessionStorage.getItem('name');
             context.recipe = recipe;
@@ -671,11 +673,12 @@ const app = Sammy('#rooter', function(){
                     password
                 };
                 success();
+                
                 window.sessionStorage.setItem('user', newUser);
                 window.sessionStorage.setItem('name', newUser.firstName + ' ' + newUser.lastName);
 
                 console.log(newUser);
-                loggedIn = true;
+                
 
                 let url = 'https://baas.kinvey.com/user/kid_B1fSQN7fw';
 
@@ -697,7 +700,27 @@ const app = Sammy('#rooter', function(){
                 fetch(url, jsonDataObj).then(res => {
                     console.log(res);
                     if(res.ok){
-                        this.redirect('#/shared');
+                        //! RIght fucking here 8**************************
+                        res.json().then(function(response){
+                            console.log(response);
+                            window.sessionStorage.setItem('loggedIn', response._kmd.authtoken);
+                            window.sessionStorage.setItem('name', response.firstName + ' ' + response.lastName);
+                            window.sessionStorage.setItem('creator', response._acl.creator);
+
+                            
+                            window.sessionStorage.getItem('loggedIn');
+                            window.sessionStorage.getItem('name');
+                            window.sessionStorage.getItem('creator');
+                            
+                            
+                            // context.hasRecipes = true;
+                            // let hasRecipes = context.hasRecipes;
+                        }).then(function(){
+                            loggedIn = true;
+                            location.replace('#/shared');
+                        });
+
+                        
                     } else {
 
                     }
@@ -930,9 +953,38 @@ const app = Sammy('#rooter', function(){
             console.log('Edited Recipe');
         }
 
+        deleteRecipe({context}){
+            // console.log(context.params.id);
+            console.log(this.params.id);
+            let id = this.params.id;
+
+            let url = 'https://baas.kinvey.com/appdata/kid_B1fSQN7fw/recipes/' + id;
+            let auth = window.sessionStorage.loggedIn;
+
+            let sendJSON = {
+                method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Kinvey ' + auth
+                    }
+            };
+
+            fetch(url, sendJSON).then(function (res) {
+                if(res.ok){
+                    
+                    console.log('Deleted succesfully');
+                } else {
+                    throw 'This is a delete error';
+                }
+            }).then(function(){
+                location.replace('#/');
+            });
+        }
+
         handleLike({params}){
             
         }
+
     }
 /* 
 https: //baas.kinvey.com/appdata/kid_B1fSQN7fw/recipes
@@ -974,8 +1026,9 @@ https: //baas.kinvey.com/appdata/kid_B1fSQN7fw/recipes
     // share route 
     this.get("#/share", route.handleShareRecipesRoute);
     this.post("#/share", data.addRecipe);
-    // details route 
-    // this.get("#/details", route.handleDetailsRoute);
+
+    // delete route
+    this.get('#/delete/:id', data.deleteRecipe);
     
     // like route
     this.put('#/like/:id', data.handleLike);
