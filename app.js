@@ -12,6 +12,12 @@ const app = Sammy('#rooter', function(){
 
     let ids = window.sessionStorage.getItem('id') != null;
     let id = window.sessionStorage.getItem('id');
+    
+    let likes = window.sessionStorage.getItem('likesCounter') != null;
+    let likesCounter = window.sessionStorage.getItem('likesCounter');
+
+    let creators = window.sessionStorage.getItem('creator') != null;
+    let creator = window.sessionStorage.getItem('creator');
 
     document.cookie = "promo_shown=1; Max-Age=2600000; SameSite=None; Secure";
 
@@ -21,7 +27,7 @@ const app = Sammy('#rooter', function(){
             context.user = user;
             console.log(user);
 
-            context.name = name;
+            context.name = window.sessionStorage.getItem('name');
             console.log(name);
 
             context.load('/views/header.hbs')
@@ -31,6 +37,7 @@ const app = Sammy('#rooter', function(){
                         header: headerPartial,
                         footer: footerPartial
                     };
+                    // name = window.sessionStorage.getItem('name');
                     context.partial('./views/index.hbs');
                     // context.name = name;
                 });
@@ -40,6 +47,9 @@ const app = Sammy('#rooter', function(){
         handleRegisterRoute(context) {
             context.loggedIn = loggedIn;
             context.user = user;
+
+            context.name = name;
+
             context.load('/views/header.hbs').then(setInterval(() => {
                 $('#registrationImage').fadeIn(3500);
             }, 1000))
@@ -56,6 +66,26 @@ const app = Sammy('#rooter', function(){
         }
         handleLoginRoute(context){
             context.loggedIn = loggedIn;
+            context.user = user;
+            context.name = window.sessionStorage.getItem('name');
+
+            context.load('/views/header.hbs')
+                .then((headerPartial) => {
+                    context.load('/views/footer.hbs').then((footerPartial) => {
+                        context.partials = {
+                            header: headerPartial,
+                            footer: footerPartial
+                        };
+
+                        context.partial('/views/login.hbs');
+                    });
+                });            
+        }
+
+        handleLogoutRoute(context){
+            loggedIn = false;
+            context.name = window.sessionStorage.getItem('name');
+            window.sessionStorage.clear();
             context.load('/views/header.hbs')
             .then((headerPartial) => {
                 context.load('/views/footer.hbs').then((footerPartial) => {
@@ -63,9 +93,15 @@ const app = Sammy('#rooter', function(){
                         header: headerPartial,
                         footer: footerPartial
                     };
-
-                    $('#loadingImage').hide();
-                    context.partial('/views/login.hbs');
+                    
+                    setTimeout(() => {
+                        $('#successBox').toggle();
+                    }, 500);
+                    setTimeout(() => {
+                        $('#successBox').toggle();
+                    }, 5000);
+                        
+                    context.partial('/views/logout.hbs');
                 });
             });
         }
@@ -75,12 +111,17 @@ const app = Sammy('#rooter', function(){
             context.loggedIn = loggedIn;
             
             context.user = user;
-            context.recipe = recipe; 
+            context.recipe = recipe;
+            
+            context.name = window.sessionStorage.getItem('name');
 
             const id = context.params.id;
             console.log(id);
 
-            console.log(window.sessionStorage);
+            likesCounter = context.params.likesCounter;
+            console.log(likesCounter);
+
+            // console.log(window.sessionStorage);
             let url = 'https://baas.kinvey.com/appdata/kid_B1fSQN7fw/recipes/'+id;
             let auth = window.sessionStorage.loggedIn;
 
@@ -96,6 +137,19 @@ const app = Sammy('#rooter', function(){
                 
                 if(res.ok){
                     res.json().then(function(resAgain) {
+                        context.hasRecipes = resAgain;
+                        let hasRecipes = context.hasRecipes;
+
+                        context.creator = window.sessionStorage.getItem('creator');
+                        // console.log(`Does ${hasRecipes._acl.creator} equal ${{creator}}`);
+
+                        if (hasRecipes._acl.creator == context.creator) {
+                            context.hasRecipes = true;
+                        } else {
+                            context.hasRecipes = false;
+                        }
+
+                        console.log(context.hasRecipes);
                         console.log(resAgain);
                         context.recipe = resAgain;
                     });
@@ -124,6 +178,8 @@ const app = Sammy('#rooter', function(){
             context.user = user;
             context.recipe = recipe;
             console.log(recipe);
+
+            context.name = window.sessionStorage.getItem('name');
 
             const id = context.params.id;
             console.log(id);
@@ -167,17 +223,20 @@ const app = Sammy('#rooter', function(){
         handleSharedRecipesRoute(context){
             context.loggedIn = loggedIn;
             context.user = user;
-            
+            context.name = window.sessionStorage.getItem('name');
             context.recipe = recipe;
             context.id = id;
-
+            context.creator = window.sessionStorage.getItem('creator');
+            context.creator = creator;
+            // console.log(window.sessionStorage);
+            console.log(name);
             let url = 'https://baas.kinvey.com/appdata/kid_B1fSQN7fw/recipes';
             let auth = window.sessionStorage.loggedIn;
             // let recipes = window.sessionStorage.recipes;
 
             let jsonDataObj = {
                 method: 'GET',
-                // mode: 'cors',
+                mode: 'cors',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Kinvey ' + auth
@@ -185,19 +244,22 @@ const app = Sammy('#rooter', function(){
             };
 
             fetch(url, jsonDataObj).then(function (res) {
-
+                
                 loggedIn = true;
                 // console.log(res);
                 res.json().then(function (response) {
 
                     let allRecipes = response;
+                    // this will be needed for likes button
+                    // const userRecipes = allRecipes.filter(recipe => recipe._acl.creator == window.sessionStorage.getItem('creator'));
+                    
                     context.hasRecipes = (allRecipes.length > 0 ? true : false);
-                    context.recipe = allRecipes;
-                    
-                    
+
                     recipes = window.sessionStorage.setItem('recipe', response);
+
                     id = window.sessionStorage.setItem('id', response._id);
                     // src = window.sessionStorage.setItem('id', response._id);
+                    context.recipe = allRecipes;
 
                     console.log(allRecipes);
                 });
@@ -219,6 +281,7 @@ const app = Sammy('#rooter', function(){
         handleShareRecipesRoute(context){
             context.loggedIn = loggedIn;
             context.user = user;
+            context.name = window.sessionStorage.getItem('name');
 
             context.load('/views/header.hbs')
             .then((headerPartial) => {
@@ -235,6 +298,8 @@ const app = Sammy('#rooter', function(){
         handleNotFoundRecipesRoute(context){
             context.loggedIn = loggedIn;
             context.user = user;
+            context.name = window.sessionStorage.getItem('name');
+            
             context.load('/views/header.hbs')
             .then((headerPartial) => {
                 context.load('/views/footer.hbs').then((footerPartial) => {
@@ -257,6 +322,7 @@ const app = Sammy('#rooter', function(){
             };
 
             let success = function success() {
+                $('#loadingImage').toggle();
                 $('#successBox').click(function () {
                     console.log('success clicked');
                     $('#successBox').addClass('close');
@@ -303,6 +369,7 @@ const app = Sammy('#rooter', function(){
             fetch(url, jsonDataObj, loadingNotification()).then(res => {
                 console.log(res);
                 if(res.ok){
+                    
                     loadingNotification();
                     success();
                     res.json().then(JSONresponse => {
@@ -312,6 +379,8 @@ const app = Sammy('#rooter', function(){
                         window.sessionStorage.setItem('loggedIn', JSONresponse._kmd.authtoken);
                         window.sessionStorage.setItem('name', `${JSONresponse.firstName} ${JSONresponse.lastName}`);
 
+                        window.sessionStorage.setItem('creator', JSONresponse._acl.creator);
+
                         loggedIn = true;
                         user = JSONresponse.username;
 
@@ -320,23 +389,27 @@ const app = Sammy('#rooter', function(){
                         
                         $('#defaultRegisterFormUsername').val('');
                         $('#defaultRegisterFormPassword').val('');
+                        $('#sign-up').remove();
                         
+                        window.sessionStorage.getItem('name');
+                        console.log(name);
+                        $('#sign-up').remove();
+
                         // redirect and prevent ability to go back after logout 
-                        setInterval(() => {
-                            window.location.replace('#/');
-                        }, 6000);
+                        setTimeout(() => {
+                            
+                            this.redirect('#/shared');
+                        }, 2000);
                     });
                 } else {
                     fail();
                     loadingNotification();
-                    // this.redirect('#/register');
-                    setInterval(() => {
-                        window.location.replace('#/register');
-                    }, 15000);
+                    // // this.redirect('#/register');
+                    // setInterval(() => {
+                    //     window.location.replace('#/login');
+                    // }, 15000);
                     console.log(res.status);
                 }
-                
-                
             });
             
             console.log('logged in!');
@@ -375,7 +448,7 @@ const app = Sammy('#rooter', function(){
                     window.sessionStorage.clear();
                     success();
                     loggedIn = false;
-                    this.redirect('/');
+                    this.redirect('#/logout');
                 } else {
                     console.log(res.status);
                     window.sessionStorage.clear();
@@ -554,6 +627,26 @@ const app = Sammy('#rooter', function(){
         }
 
         handleAddUser({ params }){
+            let success = function success() {
+                $('#successBox').click(function () {
+                    console.log('success clicked');
+                    $('#successBox').addClass('close');
+                    $('#successBox').attr('data-dismiss', 'alert');
+                });
+                $('#successBox').fadeTo(5000, 500).slideUp(500, function () {
+                    $('#successBox').slideUp(5000);
+
+                });
+                $('#defaultRegisterFormFirstName').val('');
+                $('#defaultRegisterFormLastName').val('');
+                $('#defaultRegisterFormUsername').val('');
+                $('#defaultRegisterFormPassword').val('');
+                $('#defaultRegisterRepeatPassword').val('');
+                
+                // setInterval(() => {
+                //     this.redirect('#/shared');
+                // }, 2000);
+            };
             const {firstName, lastName, username, password} = params;
             let passed = true;
 
@@ -562,8 +655,9 @@ const app = Sammy('#rooter', function(){
             
             let usernamePass = username.length >= 3;
             let passwordPass = password.length >= 6;
+            let passwordPass2 = passwordPass;
             
-            passed = firstNamePass & lastNamePass & usernamePass & passwordPass;
+            passed = firstNamePass & lastNamePass & usernamePass & passwordPass & passwordPass2;
 
             setInterval(() => {
                 $('#registrationImage').toggle();
@@ -576,8 +670,9 @@ const app = Sammy('#rooter', function(){
                     username,
                     password
                 };
-                
+                success();
                 window.sessionStorage.setItem('user', newUser);
+                window.sessionStorage.setItem('name', newUser.firstName + ' ' + newUser.lastName);
 
                 console.log(newUser);
                 loggedIn = true;
@@ -601,9 +696,13 @@ const app = Sammy('#rooter', function(){
 
                 fetch(url, jsonDataObj).then(res => {
                     console.log(res);
-                });
+                    if(res.ok){
+                        this.redirect('#/shared');
+                    } else {
 
-                this.redirect('#/');
+                    }
+                    
+                });
             } else {
                 $('#errorBox').toggle();
                 if (!firstNamePass) {
@@ -832,38 +931,7 @@ const app = Sammy('#rooter', function(){
         }
 
         handleLike({params}){
-            context.loggedIn = loggedIn;
-            const id = params.context.id;
-
-            let url = 'https://baas.kinvey.com/appdata/kid_B1fSQN7fw/recipes/' + id;
-            let auth = window.sessionStorage.loggedIn;
-            console.log(id);
-
-            let jsonDataObj = {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Kinvey ' + auth
-                },
-                body: JSON.stringify({
-                    likesCounter: likesCounter
-                })
-            };
-            likesCounter += 1;
-
-            fetch(url, jsonDataObj).then(function(response){
-
-                if(response.ok){
-                    response.json().then(function(res) {
-                        console.log(res);
-                        
-                    }).then(function(){
-                        redirect('#/details/'+id);
-                    });
-                }
-            });
-
-
+            
         }
     }
 /* 
@@ -884,7 +952,8 @@ https: //baas.kinvey.com/appdata/kid_B1fSQN7fw/recipes
     this.post("#/login", data.login);
 
     //logout routes
-    this.get('#/logout', data.logout);
+    this.get('#/logout', route.handleLogoutRoute);
+    this.post('#/logout', data.logout);
 
     // add user
     this.get('#/user', route.handleRegisterRoute); // ????????????????***********

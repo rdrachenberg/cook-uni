@@ -154,6 +154,7 @@ h1 {
   text-align: left;
   background: white;
   color: black;
+  overflow: scroll;
 }
 
 .team-front {
@@ -305,4 +306,12 @@ form textarea {
 
 #registrationImage {
   display: none;
+}
+
+#chefs {
+  border-radius: 25px;
+}
+
+#egg {
+  border-radius: 25px;
 }

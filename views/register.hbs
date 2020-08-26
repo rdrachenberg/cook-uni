@@ -1,4 +1,10 @@
 {{>header}}
+<div id="notifications">
+    <div id="successBox" class="alert alert-success alert-dismissible fade show" role="alert">User registration
+        successful.</div>
+    <div id="loadingBox" class="alert alert-info alert-dismissible fade show" role="alert">Loading...</div>
+    <div id="errorBox" class="alert alert-danger alert-dismissible fade show" role="alert">{Error Message...}</div>
+</div>
 <form class="text-center p-5 form-layout" action="#/user" method="POST">
 
     <p class="h4 mb-4">Sign up</p>
@@ -25,11 +31,6 @@
 
 </form>
 <br>
-<div id="notifications">
-    <div id="successBox" class="alert alert-success alert-dismissible fade show" role="alert">User registration successful.</div>
-    <div id="loadingBox" class="alert alert-info alert-dismissible fade show" role="alert">Loading...</div>
-    <div id="errorBox" class="alert alert-danger alert-dismissible fade show" role="alert">{Error Message...}</div>
-</div>
 <p align="center" id="registrationImage">
     <img src="https://i.pinimg.com/originals/9d/91/81/9d91814713e79937a7f0f33181e277c1.gif">
 </p>

@@ -17,9 +17,13 @@
                         <p class="description">{{recipe.description}}</p>
                     </div>
                     <div class="actions">
+                        {{#if hasRecipes}}
                         <a class="btn btn-danger" href="#">Archive</a>
                         <a class="btn btn-info" href="#/edit/{{recipe._id}}">Edit</a>
                         <a class="btn btn-success" href="#/like/{{recipe._id}}">0 likes</a>
+                        {{else}}
+                        <a class="btn btn-success" href="#/like/{{recipe._id}}">0 likes</a>
+                        {{/if}}
                     </div>
                 </div>
                 <div class="detailsIngredients">
