@@ -2,14 +2,14 @@
 ### Tasked with creating a functional recipe sharing site with DB Authorization login's and CRUD operations
 
 <p align='center'>
-    <a href='https://github.com/rdrachenberg/popular-monkeys/tree/master/js'>
-        <img src='https://img.shields.io/badge/JavaScript-56.4%25-brightgreen?style=plastic&logo=javascript'>
+    <a href='https://github.com/rdrachenberg/cook-uni/blob/master/app.js'>
+        <img src='https://img.shields.io/badge/JavaScript-77.5%25-yellow?style=plastic&logo=javascript'>
     </a>
-    <a href='https://github.com/rdrachenberg/popular-monkeys/blob/master/css/style.css'>
-        <img src='https://img.shields.io/badge/CSS-23.8%25-purple?style=plascit&logo=CSS3&logoColor=blue'>
+    <a href='https://github.com/rdrachenberg/cook-uni/blob/master/index.html'> 
+        <img src='https://img.shields.io/badge/HTML-16.8%25-red?style=plastic&logo=HTML5'>
     </a>
-    <a href='https://github.com/rdrachenberg/popular-monkeys/blob/master/index.html'> 
-        <img src='https://img.shields.io/badge/HTML-19.8%25-orange?style=plastic&logo=HTML5'>
+    <a href='https://github.com/rdrachenberg/cook-uni/blob/master/styles/styles.css'>
+        <img src='https://img.shields.io/badge/CSS-5.7%25-purple?style=plascit&logo=CSS3&logoColor=red'>
     </a> 
     <a href='https://handlebarsjs.com/'>
         <img src='https://img.shields.io/badge/Made%20with-Handlebars-yellowgreen?style=plastic&logo=HackerRank&logoColor=yellow'>
