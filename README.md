@@ -76,5 +76,6 @@
 * [x] Kinvey all routes working
 * [x] Controllers setup<br>
 * [x] Handlebars setup<br>
+* [ ] Like button functioning<br>
 
 * **README DONE [ ]**
