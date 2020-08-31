@@ -304,8 +304,16 @@ form textarea {
   display: none;
 }
 
+#loadingImageToo {
+  border-radius: 25px;
+}
+
 #registrationImage {
   display: none;
+}
+#registrationImageBoy {
+  border-radius: 25px;
+  
 }
 
 #chefs {
