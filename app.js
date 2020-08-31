@@ -19,6 +19,8 @@ const app = Sammy('#rooter', function(){
     let creators = window.sessionStorage.getItem('creator') != null;
     let creator = window.sessionStorage.getItem('creator');
 
+    let encoded = window.sessionStorage.getItem('encoded') != null;
+
     document.cookie = "promo_shown=1; Max-Age=2600000; SameSite=None; Secure";
 
     class RouteController {
@@ -114,11 +116,14 @@ const app = Sammy('#rooter', function(){
             context.recipe = recipe;
             
             context.name = window.sessionStorage.getItem('name');
+            context.recipe = window.sessionStorage.setItem('recipe', context.recipe);
+            console.log(recipe);
+            
 
             const id = context.params.id;
             console.log(id);
 
-            likesCounter = context.params.likesCounter;
+            context.likesCounter = likesCounter;
             console.log(likesCounter);
 
             // console.log(window.sessionStorage);
@@ -141,6 +146,7 @@ const app = Sammy('#rooter', function(){
                         let hasRecipes = context.hasRecipes;
 
                         context.creator = window.sessionStorage.getItem('creator');
+                        
                         // console.log(`Does ${hasRecipes._acl.creator} equal ${{creator}}`);
 
                         if (hasRecipes._acl.creator == context.creator) {
@@ -152,10 +158,20 @@ const app = Sammy('#rooter', function(){
                         console.log(context.hasRecipes);
                         console.log(resAgain);
                         context.recipe = resAgain;
+                        window.sessionStorage.setItem('recipe', JSON.stringify(context.recipe));
+                        window.sessionStorage.getItem('recipe');
+                        console.log(window.sessionStorage);
+                        console.log(context.recipe);
+                        
+                        // let encodedFoodImageURL = encodeURIComponent(context.recipe.foodImageURL);
+                        // window.sessionStorage.setItem('encoded', encodedFoodImageURL);
+                        // console.log(encodedFoodImageURL);
+                        // console.log(window.sessionStorage);
                     });
                 }
                 // console.log(res);
             }).then(function(){
+                window.sessionStorage.getItem('recipe');
                 context.load('/views/header.hbs')
                     .then((headerPartial) => {
                         context.load('/views/footer.hbs').then((footerPartial) => {
@@ -226,8 +242,10 @@ const app = Sammy('#rooter', function(){
             
             context.user = user;
             context.name = window.sessionStorage.getItem('name');
+            
             context.recipe = recipe;
             context.id = id;
+            
             context.creator = window.sessionStorage.getItem('creator');
             context.creator = creator;
             // console.log(window.sessionStorage);
@@ -256,8 +274,12 @@ const app = Sammy('#rooter', function(){
                     // const userRecipes = allRecipes.filter(recipe => recipe._acl.creator == window.sessionStorage.getItem('creator'));
                     
                     context.hasRecipes = (allRecipes.length > 0 ? true : false);
+                    let hasRecipes = context.hasRecipes;
+                    console.log(hasRecipes);
 
-                    recipes = window.sessionStorage.setItem('recipe', response);
+                    recipe = window.sessionStorage.setItem('recipe', allRecipes);
+                    // window.sessionStorage.getItem('recipe');
+                    console.log(window.sessionStorage);
 
                     id = window.sessionStorage.setItem('id', response._id);
                     // src = window.sessionStorage.setItem('id', response._id);
@@ -700,7 +722,7 @@ const app = Sammy('#rooter', function(){
                 fetch(url, jsonDataObj).then(res => {
                     console.log(res);
                     if(res.ok){
-                        //! RIght fucking here 8**************************
+                        
                         res.json().then(function(response){
                             console.log(response);
                             window.sessionStorage.setItem('loggedIn', response._kmd.authtoken);
@@ -771,6 +793,7 @@ const app = Sammy('#rooter', function(){
                 description,
                 foodImageURL,
                 category, 
+                likesCounter,
                 id
             } = params;
 
@@ -833,6 +856,7 @@ const app = Sammy('#rooter', function(){
             let auth = window.sessionStorage.loggedIn;
             ingredients = ingredients.split(', ');
 
+            likesCounter = this.likesCounter;
 
             let jsonDataObj = {
                 method: 'PUT',
@@ -848,7 +872,7 @@ const app = Sammy('#rooter', function(){
                     foodImageURL: foodImageURL,
                     category: category,
                     categoryImageURL: categoryImageURL,
-                    // likesCounter: likesCounter
+                    likesCounter: likesCounter
                 })
             };
 
@@ -982,7 +1006,72 @@ const app = Sammy('#rooter', function(){
         }
 
         handleLike({params}){
+            // console.log(this.recipe);
+            this.params = params;
+            window.sessionStorage.getItem('recipe');
+            let recipes = JSON.parse(recipe);
+            console.log(recipes);
+
+            let id = this.params.id;
             
+            console.log(id);
+            let meal = recipes.meal;
+            let ingredients = recipes.ingredients;
+            let prepMethod = recipes.prepMethod;
+            let description = recipes.description;
+            let foodImageURL = recipes.foodImageURL;
+            let category = recipes.category;
+            let categoryImageURL = recipes.categoryImageURL;
+            let likesCounter = recipes.likesCounter;
+            
+            console.log(meal);
+
+            // ingredients = ingredients.split(',');
+
+            console.log(recipes);
+            console.log(id); 
+            // console.log(JSON.parse(recipe));
+            
+            likesCounter += 1;
+            
+
+            let url = 'https://baas.kinvey.com/appdata/kid_B1fSQN7fw/recipes/' + id;
+            let auth = window.sessionStorage.loggedIn;
+            
+            let sendJSON = {
+                method: 'PUT',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Kinvey ' + auth
+                }, 
+                body: JSON.stringify({
+                    meal: meal,
+                    ingredients: ingredients,
+                    prepMethod: prepMethod,
+                    description: description,
+                    foodImageURL: foodImageURL,
+                    category: category,
+                    categoryImageURL: categoryImageURL,
+                    likesCounter: likesCounter,
+                    id: id,
+                    completed: true
+                })
+            };
+            
+            fetch(url, sendJSON).then((res)=>{
+                console.log(res);
+
+                if(res.ok){
+                    res.json().then(function(response){
+                        console.log(response);
+                        window.sessionStorage.removeItem('recipe');
+                        // window.sessionStorage.setItem('recipe', JSON.stringify(response));
+                        window.location.replace('#/');
+                        
+                    });
+                }
+            });
         }
 
     }
@@ -1031,7 +1120,7 @@ https: //baas.kinvey.com/appdata/kid_B1fSQN7fw/recipes
     this.get('#/delete/:id', data.deleteRecipe);
     
     // like route
-    this.put('#/like/:id', data.handleLike);
+    this.get('#/like/:id', data.handleLike);
 
     // not found route 
     this.get("#/not-found", route.handleNotFoundRecipesRoute);
