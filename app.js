@@ -277,7 +277,7 @@ const app = Sammy('#rooter', function(){
                     let hasRecipes = context.hasRecipes;
                     console.log(hasRecipes);
 
-                    recipe = window.sessionStorage.setItem('recipe', allRecipes);
+                    recipe = window.sessionStorage.setItem('recipe', JSON.stringify(allRecipes));
                     // window.sessionStorage.getItem('recipe');
                     console.log(window.sessionStorage);
 
@@ -1005,10 +1005,13 @@ const app = Sammy('#rooter', function(){
             });
         }
 
-        handleLike({params}){
+        handleLike({context}){
             // console.log(this.recipe);
-            this.params = params;
+            // this.params = params;
             window.sessionStorage.getItem('recipe');
+
+            // console.log(recipe);
+
             let recipes = JSON.parse(recipe);
             console.log(recipes);
 
@@ -1065,8 +1068,10 @@ const app = Sammy('#rooter', function(){
                 if(res.ok){
                     res.json().then(function(response){
                         console.log(response);
-                        window.sessionStorage.removeItem('recipe');
-                        // window.sessionStorage.setItem('recipe', JSON.stringify(response));
+                        window.sessionStorage.removeItem("recipe");
+                        console.log(window.sessionStorage);
+                        // window.sessionStorage.setItem('recipe', JSON.stringify(recipe));
+                        // console.log(recipe);
                         window.location.replace('#/');
                         
                     });
